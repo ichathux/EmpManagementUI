@@ -10,7 +10,10 @@ import { EmployeeService } from './employee.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+
   public employees: Employee[] = [];
+  public editEmployee!: Employee;
+  public deleteEmployee!: Employee;
   constructor(private employeeService: EmployeeService){}
 
   ngOnInit(){
@@ -32,6 +35,31 @@ export class AppComponent implements OnInit{
     this.employeeService.addEmployee(addForm.value).subscribe(
       (response: Employee[]) => {
         console.log(response);
+        this.getEmployees();
+        addForm.reset();
+      },
+      (error : HttpErrorResponse) => {
+        alert(error.message)
+        addForm.reset();
+      }
+    );
+  }
+  public onEditEmployee(employee:Employee ): void{
+    document.getElementById('edit-employee-form')?.click();
+    this.employeeService.updateEmployee(employee).subscribe(
+      (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+      },
+      (error : HttpErrorResponse) => {
+        alert(error.message)
+      }
+    );
+  }
+  public onDeleteEmployee(employeeId:number ): void{
+    document.getElementById('delete-employee-form')?.click();
+    this.employeeService.deleteEmployee(employeeId).subscribe(
+      (response:void) => {
         this.getEmployees();
       },
       (error : HttpErrorResponse) => {
@@ -60,9 +88,11 @@ export class AppComponent implements OnInit{
       button.setAttribute('data-target', '#addEmployeeModal'); 
     }
     if(mode === 'edit'){
+      this.editEmployee = employee;
       button.setAttribute('data-target', '#editEmployeeModal'); 
     }
     if(mode === 'delete'){
+      this.deleteEmployee = employee;
       button.setAttribute('data-target', '#deleteEmployeeModal'); 
     }
     container?.appendChild(button);
