@@ -77,6 +77,21 @@ export class AppComponent implements OnInit{
     container?.appendChild(button);
     button.click();
   }
+  public searchEmployee(key:string):void{
+    const result : Employee[] =[];
+    for (const employee of this.employees) {
+      if(employee.name.toLowerCase().indexOf(key.toLowerCase()) != -1
+      || employee.email.toLowerCase().indexOf(key.toLowerCase()) != -1
+      || employee.phone.toLowerCase().indexOf(key.toLowerCase()) != -1
+      || employee.jobTitle.toLowerCase().indexOf(key.toLowerCase()) != -1){
+        result.push(employee);
+      }
+    } 
+    this.employees = result;
+    if(result.length == 0 || !key){
+      this.getEmployees();
+    }
+  }
 
   public onOpenModel(employee : Employee, mode:string):void{
     const container = document.getElementById('main-container');
